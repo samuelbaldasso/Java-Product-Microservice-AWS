@@ -17,7 +17,8 @@ This study aims to:
 - Consume messaging via RabbitMQ (local)
 - Keep the environment simple, controlled, and low-cost
 
-📍 **The microservice runs locally (Docker/Podman)**  
+📍 **The microservice runs locally (Docker/Podman)** 
+
 AWS is used only as **supporting infrastructure**.
 
 ---
