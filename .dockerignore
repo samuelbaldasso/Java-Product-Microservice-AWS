@@ -1,0 +1,27 @@
+# Ignore IDE files
+.idea/
+*.iml
+.vscode/
+
+# Ignore build artifacts
+target/
+*.jar
+*.war
+*.ear
+
+# Ignore logs
+*.log
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore environment files
+.env
+.env.local
+*.env
+
+# Ignore temporary files
+*.tmp
+*.swp
+*~

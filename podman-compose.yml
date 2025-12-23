@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  app:
+    build: 
+      context: .
+      args:
+        SPRING_PROFILES_ACTIVE: aws
+    image: my-java-backend:latest
+    container_name: my-java-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=aws
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - CLOUDFRONT_DISTRIBUTION_ID=${CLOUDFRONT_DISTRIBUTION_ID}
+      - JAVA_OPTS=-Xmx512m -Xms256m -Dspring.profiles.active=aws
+    volumes:
+      - ~/.aws:/home/appuser/.aws:ro,z
+    networks:
+      - app-network
+    security_opt:
+      - label=disable
+    userns_mode: keep-id
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 60s
+
+  localstack:
+    image: docker.io/localstack/localstack:latest
+    container_name: localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=cloudwatch,logs,cloudfront,s3
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - DEFAULT_REGION=us-east-1
+    volumes:
+      - ./localstack:/tmp/localstack:z
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

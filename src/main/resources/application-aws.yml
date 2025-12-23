@@ -1,0 +1,84 @@
+spring:
+  application:
+    name: my-java-backend
+
+  datasource:
+    url: jdbc:postgresql://database-product-instance-1.cc1kujauuftf.us-east-1.rds.amazonaws.com:${DB_PORT:5432}/postgres
+    username: postgres
+    password: Darude97
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: 5672
+    username: ${RABBITMQ_USER:admin}
+    password: ${RABBITMQ_PASSWORD}
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 1000
+          max-attempts: 3
+          multiplier: 2
+
+server:
+  port: 8080
+  compression:
+    enabled: true
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus,info
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  metrics:
+    export:
+      cloudwatch:
+        enabled: true
+        namespace: ${AWS_CLOUDWATCH_NAMESPACE:MyApplication/Backend}
+        step: 1m
+    tags:
+      application: ${spring.application.name}
+      environment: ${SPRING_PROFILES_ACTIVE}
+
+aws:
+  region: ${AWS_REGION:us-east-1}
+  cloudwatch:
+    log-group: /ecs/${spring.application.name}
+    namespace: ${AWS_CLOUDWATCH_NAMESPACE:MyApplication/Backend}
+  cloudfront:
+    distribution-id: E2M1OH2XJCO5C3
+    enabled: true
+
+logging:
+  level:
+    root: INFO
+    com.myapp: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    software.amazon.awssdk: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"

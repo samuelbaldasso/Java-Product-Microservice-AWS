@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: my-java-backend
+
+aws:
+  region: us-east-1
+  cloudwatch:
+    log-group: /aws/application/${spring.application.name}
+    log-stream: ${HOSTNAME:localhost}
+    namespace: MyApplication/Backend
+  cloudfront:
+    distribution-id: ${CLOUDFRONT_DISTRIBUTION_ID}
+    enabled: true
+
+logging:
+  level:
+    root: INFO
+    com.myapp: DEBUG
+    software.amazon.awssdk: WARN

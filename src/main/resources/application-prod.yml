@@ -1,0 +1,52 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ecommerce-product-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/productdb
+    username: product
+    password: product
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+      page-serialization-mode: via-dto
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: E-commerce Product Service
+    description: Product management microservice for e-commerce platform
+    version: 0.0.1-SNAPSHOT
+
+logging:
+  level:
+    root: WARN
+    com.sbaldasso.ecommerce_aws: INFO
+    org.springframework.web: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
